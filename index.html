@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Club Deportivo Ricardo Méndez</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=pro2026-final-ok">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="bg"></div>
+<aside class="side">
+  <div class="side-logo"><img src="logo_ricardo_mendez.png" alt="Ricardo Méndez"></div>
+  <a href="#inicio" class="active">🏠<span>Inicio</span></a>
+  <a href="#resultados">🏆<span>Resultados</span></a>
+  <a href="#posiciones">📊<span>Posiciones</span></a>
+  <a href="#fixture">📅<span>Fixture</span></a>
+  <a href="#noticias">📰<span>Noticias</span></a>
+  <a href="#galeria">🖼️<span>Galerías</span></a>
+  <a href="#historia">🛡️<span>Historia</span></a>
+  <a href="#presidentes">⭐<span>Presidentes</span></a>
+  <a href="#auspiciadores">🤝<span>Auspiciadores</span></a>
+  <a href="/admin.html" class="admin-mini">⚙<span>Admin</span></a>
+</aside>
+<main class="main">
+<header class="topbar"><div><b>CLUB DEPORTIVO RICARDO MÉNDEZ</b><small>Portal oficial · San Carlos</small></div><nav><a href="#resultados">Resultados</a><a href="#posiciones">Posiciones</a><a href="#fixture">Fixture</a><a href="#historia">Historia</a><a target="_blank" href="https://www.instagram.com/cd_ricardomendez_sancarlos">Instagram</a><a target="_blank" href="https://www.facebook.com/RICARDOMENDEZSANCARLOS">Facebook</a></nav></header>
+<section class="sponsor-ticker-section"><div class="ticker-title">★ Auspiciadores oficiales ★</div><div class="sponsor-ticker-frame"><button class="ticker-arrow" type="button">‹</button><div id="sponsorTicker" class="sponsor-ticker"></div><button class="ticker-arrow" type="button">›</button></div></section>
+<section id="inicio" class="hero">
+  <div class="hero-left"><span class="club-label">Club deportivo</span><h1>RICARDO<br>MÉNDEZ</h1><h2>Más que un club, una familia.</h2><p id="homeIntro">Sitio oficial del Club Deportivo Ricardo Méndez de San Carlos. Noticias, socios, fixture, resultados, fotos, videos, auspiciadores e historia institucional.</p><div class="actions"><a href="#resultados" class="btn-gold">🏆 Últimos resultados</a><a class="btn-blue" href="https://wa.me/56994413797?text=Hola,%20quiero%20solicitar%20ser%20socio%20del%20Club%20Ricardo%20Méndez" target="_blank">👥 Hazte socio</a></div></div>
+  <div class="crest-wrap"><div class="crest-glow"></div><img src="logo_ricardo_mendez.png" alt="Escudo"></div>
+  <aside class="match-card" id="nextMatchCard"></aside>
+</section>
+<section class="metrics" id="metrics"></section>
+<section id="auspiciadores" class="section"><div class="section-head"><h2>Auspiciadores oficiales</h2><p>Empresas y emprendimientos que apoyan al club.</p></div><div id="sponsorsGrid" class="sponsors-grid"></div></section>
+<section id="resultados" class="section"><div class="section-head"><h2>Últimos resultados</h2><p>Resumen deportivo del club.</p></div><div id="resultsGrid" class="cards-grid"></div></section>
+<section id="fixture" class="section"><div class="section-head"><h2>Fixture del club</h2><p>Imagen única por fecha.</p></div><div id="fixtureGrid" class="fixture-grid"></div></section>
+<section id="posiciones" class="section"><div class="section-head"><h2>Tablas de posiciones</h2><select id="serieSelect"></select></div><div class="table-wrap"><table><thead><tr><th>Pos</th><th>Equipo</th><th>J</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th></tr></thead><tbody id="standingsRows"></tbody></table></div></section>
+<section id="ranking" class="section"><div class="section-head"><h2>Tabla acumulada</h2><p>Puntos generales por club.</p></div><div class="table-wrap"><table><thead><tr><th>Pos</th><th>Equipo</th><th>J</th><th>PTS</th><th>DG</th></tr></thead><tbody id="cumulativeRows"></tbody></table></div></section>
+<section id="noticias" class="section"><div class="section-head"><h2>Noticias</h2><p>Información oficial.</p></div><div id="newsGrid" class="news-grid"></div></section>
+<section id="galeria" class="section"><div class="section-head"><h2>Fotos y videos</h2><p>Galería institucional.</p></div><div id="galleryGrid" class="gallery-grid"></div></section>
+<section id="historia" class="section story"><div id="historyBox"></div></section>
+<section id="presidentes" class="section"><div class="section-head"><h2>Galería de presidentes</h2><p>Historia dirigencial del club.</p></div><div id="presidentsGrid" class="presidents-grid"></div></section>
+<footer class="footer">PASIÓN · RESPETO · UNIÓN · TRABAJO · FAMILIA<small>Club Deportivo Ricardo Méndez · San Carlos</small></footer>
+</main>
+<div class="floating social-pro"><a class="wa" href="https://wa.me/56994413797" target="_blank">☎</a><a class="ig" href="https://www.instagram.com/cd_ricardomendez_sancarlos" target="_blank">◎</a><a class="fb" href="https://www.facebook.com/RICARDOMENDEZSANCARLOS" target="_blank">f</a></div>
+<script>window.CDRM_DEFAULT_SPONSORS=[{"name": "SAN PATRICIO MINIMARKET & BOTILLERÍA", "url": "sponsor_01.png"}, {"name": "GPS RUTA", "url": "sponsor_02.png"}, {"name": "RESTAURANT EL CARIBE", "url": "sponsor_03.png"}, {"name": "CONSTRUCTORA VENEGAS PRADENAS", "url": "sponsor_04.png"}, {"name": "CONSTRUCTORA BELTRÁN", "url": "sponsor_05.png"}, {"name": "FERRETERÍA PARRALITO", "url": "sponsor_06.png"}, {"name": "ARRIENDO DE MAQUINARIAS MENORES V&V SPA", "url": "sponsor_07.png"}, {"name": "DISTRIBUIDORA LA MAQUILA", "url": "sponsor_08.png"}, {"name": "RESTAURANT LA CASERITA", "url": "sponsor_09.png"}, {"name": "EL MAESTRO DE LA PARRILLA JUAN CRIOLLO", "url": "sponsor_10.png"}, {"name": "PEÑAFRUT", "url": "sponsor_11.png"}, {"name": "FUTBAR PITU", "url": "sponsor_12.png"}, {"name": "LA ESPIGA DE ORO", "url": "sponsor_13.png"}, {"name": "COMPLEJO EL CASTAÑO", "url": "sponsor_14.png"}, {"name": "CASCADAS DE ÑUBLE", "url": "sponsor_15.png"}, {"name": "MAOR", "url": "sponsor_16.png"}, {"name": "DON LUCHITO CECINAS", "url": "sponsor_17.png"}];window.CDRM_LOGO="logo_ricardo_mendez.png";</script><script src="app.js?v=pro2026-final-ok"></script>
+</body></html>
