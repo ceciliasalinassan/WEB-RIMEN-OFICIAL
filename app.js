@@ -80,8 +80,8 @@ async function saveAll(d){saveData(d);try{await pushCloud(d);status('Estado: gua
 function status(m){if($('statusLine'))$('statusLine').textContent=m}
 function imgOrText(url,name){return url?`<img src="${url}" alt="${name}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'sponsor-fallback',textContent:'${String(name||'AUSPICIADOR').replace(/'/g,'')}'}))">`:`<div class="sponsor-fallback">${name||'AUSPICIADOR'}</div>`}
 function renderSponsors(d){$('sponsorsGrid')&&($('sponsorsGrid').innerHTML=(d.sponsors||[]).map(s=>`<article class="sponsor-card"><div class="sponsor-logo-box">${imgOrText(s.url,s.name)}</div><h3>${s.name}</h3></article>`).join(''))}
-function renderPublic(){const d=getData(); if($('homeIntro'))$('homeIntro').textContent=d.homeIntro; renderSponsors(d); renderSponsorTicker(d); renderSponsorTickerFinal(d); $('metrics')&&($('metrics').innerHTML=`<div class="metric"><span>Series</span><b>${d.metrics.series}</b></div><div class="metric"><span>Socios activos</span><b>${d.metrics.members}</b></div><div class="metric"><span>Campeonatos</span><b>${d.metrics.titles}</b></div><div class="metric"><span>Aniversario</span><b>${d.metrics.anniversary}</b></div>`);
- $('nextMatchCard')&&($('nextMatchCard').innerHTML=`<h3 class="featured-title">★ Partido destacado</h3><div class="match-pro-logos"><div class="match-team">${proImg(window.CDRM_LOGO,'Ricardo Méndez','match-logo-img')}<span>Ricardo Méndez</span></div><strong>VS</strong><div class="match-team">${proImg(d.nextMatch.logo,d.nextMatch.rival,'match-logo-img')}<span>${d.nextMatch.rival}</span></div></div><div class="match-info"><h3 class="match-title">Ricardo Méndez vs ${d.nextMatch.rival}</h3><p>📅 ${d.nextMatch.date}</p><b>📍 ${d.nextMatch.place}</b></div>`);
+function renderPublic(){const d=getData(); if($('homeIntro'))$('homeIntro').textContent=d.homeIntro; renderSponsors(d); renderSponsorTicker(d); renderHomePreviews(d); renderSponsorTickerFinal(d); $('metrics')&&($('metrics').innerHTML=`<div class="metric"><span>Series</span><b>${d.metrics.series}</b></div><div class="metric"><span>Socios activos</span><b>${d.metrics.members}</b></div><div class="metric"><span>Campeonatos</span><b>${d.metrics.titles}</b></div><div class="metric"><span>Aniversario</span><b>${d.metrics.anniversary}</b></div>`);
+ $('nextMatchCard')&&($('nextMatchCard').innerHTML=`<h3 class="featured-title">★ Próximo partido</h3><div class="match-pro-logos"><div class="match-team">${proImg(window.CDRM_LOGO,'Ricardo Méndez','match-logo-img')}<span>Ricardo<br>Méndez</span></div><strong>VS</strong><div class="match-team">${proImg(d.nextMatch.logo,d.nextMatch.rival,'match-logo-img')}<span>${d.nextMatch.rival||'Club rival'}</span></div></div><div class="match-info"><h3 class="match-title">Ricardo Méndez vs ${d.nextMatch.rival}</h3><p>▣ ${d.nextMatch.date}</p><b>⌖ ${d.nextMatch.place}</b></div><a class="match-button" href="#fixture">Ver partido</a>`);
  $('resultsGrid')&&($('resultsGrid').innerHTML=(d.results||[]).map(r=>`<article class="result-card"><span>${r.date}</span><h3>${r.match}</h3><h2>${r.score}</h2></article>`).join('')||'<article class="result-card">Sin resultados cargados.</article>');
  $('fixtureGrid')&&($('fixtureGrid').innerHTML=(d.fixture_images||[]).map(f=>`<article class="fixture-card"><img src="${f.image}" alt="${f.title}" onerror="this.style.display=\'none\'"><h3>${f.title}</h3></article>`).join(''));
  const sel=$('serieSelect'); if(sel&&!sel.options.length){sel.innerHTML=SERIES.map(s=>`<option>${s}</option>`).join('');sel.onchange=renderPublic}; const serie=sel?sel.value:SERIES[0]; const rows=[...(d.standings[serie]||[])].sort((a,b)=>(+b.pts)-(+a.pts)||(+b.dg)-(+a.dg)); $('standingsRows')&&($('standingsRows').innerHTML=rows.map((r,i)=>`<tr class="${(r.team||'').toLowerCase().includes('méndez')||(r.team||'').toLowerCase().includes('mendez')?'rm':''}"><td>${i+1}</td><td>${r.team}</td><td>${r.pj}</td><td>${r.pg}</td><td>${r.pe}</td><td>${r.pp}</td><td>${r.gf}</td><td>${r.gc}</td><td>${r.dg}</td><td>${r.pts}</td></tr>`).join(''));
@@ -253,3 +253,78 @@ function renderSponsors(d){d=d||getData();const el=document.getElementById('spon
 function renderSponsorTicker(d){d=d||getData();const el=document.getElementById('sponsorTicker');if(!el)return;const list=(d.sponsors&&d.sponsors.length?d.sponsors:(window.CDRM_DEFAULT_SPONSORS||[]));const items=[...list,...list];el.innerHTML=items.map(s=>`<div class="ticker-sponsor">${proImg(s.url,s.name,'ticker-sponsor-img')}<span>${s.name||''}</span></div>`).join('')}
 async function cleanLogoWhiteBackground(file){if(!file||!file.type||!file.type.startsWith('image/'))return file;return new Promise(resolve=>{const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{const c=document.createElement('canvas');c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);try{const data=ctx.getImageData(0,0,c.width,c.height);for(let i=0;i<data.data.length;i+=4){const r=data.data[i],g=data.data[i+1],b=data.data[i+2],a=data.data[i+3];if(a>0&&r>228&&g>228&&b>228)data.data[i+3]=0;else if(a>0&&r>210&&g>210&&b>210)data.data[i+3]=Math.round(a*.1)}ctx.putImageData(data,0,0);c.toBlob(blob=>{URL.revokeObjectURL(url);if(!blob)return resolve(file);resolve(new File([blob],file.name.replace(/\.[^.]+$/,'')+'.png',{type:'image/png'}))},'image/png')}catch(e){URL.revokeObjectURL(url);resolve(file)}};img.onerror=()=>{URL.revokeObjectURL(url);resolve(file)};img.src=url})}
 if(typeof uploadFile==='function'&&!window.__pro2026Upload){window.__pro2026Upload=true;const oldUpload=uploadFile;uploadFile=async function(file,folder){const clean=(folder==='sponsors'||folder==='logos'||folder==='presidents')?await cleanLogoWhiteBackground(file):file;return oldUpload(clean,folder)}}
+
+
+/* REFERENCIA PRO: overrides finales */
+function proSponsorFallback(img){
+  const name = img.getAttribute('alt') || 'AUSPICIADOR';
+  const box = img.closest('.logo-box,.sponsor-logo-box') || img.parentElement;
+  img.style.display='none';
+  if(box && !box.querySelector('.sponsor-fallback-pro')){
+    const d=document.createElement('div');
+    d.className='sponsor-fallback-pro';
+    d.textContent=name;
+    box.appendChild(d);
+  }
+}
+function proImg(url,name,cls=''){
+  if(!url) return `<div class="sponsor-fallback-pro">${name||'SIN IMAGEN'}</div>`;
+  return `<img class="${cls}" src="${url}" alt="${name||''}" onerror="proSponsorFallback(this)">`;
+}
+function renderSponsors(d){
+  d=d||getData();
+  const el=document.getElementById('sponsorsGrid');
+  if(!el)return;
+  const list=(d.sponsors&&d.sponsors.length?d.sponsors:(window.CDRM_DEFAULT_SPONSORS||[]));
+  el.innerHTML=list.map(s=>`<article class="sponsor-card"><div class="sponsor-logo-box">${proImg(s.url,s.name,'sponsor-img')}</div><h3>${s.name||''}</h3></article>`).join('');
+}
+function renderSponsorTicker(d){
+  d=d||getData();
+  const el=document.getElementById('sponsorTicker');
+  if(!el)return;
+  const list=(d.sponsors&&d.sponsors.length?d.sponsors:(window.CDRM_DEFAULT_SPONSORS||[]));
+  const items=[...list,...list];
+  el.innerHTML=items.map(s=>`<div class="ticker-sponsor"><div class="ticker-logo-box">${proImg(s.url,s.name,'ticker-sponsor-img')}</div><span>${s.name||''}</span></div>`).join('');
+}
+function renderHomePreviews(d){
+  d=d||getData();
+  const n=document.getElementById('homeNewsPreview');
+  if(n){
+    const news=(d.news||[]).slice(0,3);
+    n.innerHTML=news.length?news.map(x=>`<article>${x.image?`<img src="${x.image}" onerror="this.style.display='none'">`:''}<div><b>${x.title||'Noticia'}</b><p>${(x.text||'').slice(0,72)}</p></div></article>`).join(''):`<article><div><b>Inicio de temporada</b><p>El club prepara sus series para una nueva competencia.</p></div></article><article><div><b>Campaña de socios</b><p>Súmate a la familia Ricardo Méndez.</p></div></article>`;
+  }
+  const g=document.getElementById('homeGalleryPreview');
+  if(g){
+    const gal=(d.gallery||[]).slice(0,4);
+    g.innerHTML=gal.length?gal.map(x=>`${(x.type||'').toLowerCase().includes('video')?`<video src="${x.url}" muted></video>`:`<img src="${x.url}" onerror="this.style.display='none'">`}`).join(''):`<div></div><div></div><div></div><div></div>`;
+  }
+}
+async function cleanLogoWhiteBackground(file){
+  if(!file||!file.type||!file.type.startsWith('image/')) return file;
+  return new Promise(resolve=>{
+    const img=new Image(); const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const c=document.createElement('canvas'); c.width=img.naturalWidth||img.width; c.height=img.naturalHeight||img.height;
+      const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
+      try{
+        const data=ctx.getImageData(0,0,c.width,c.height);
+        for(let i=0;i<data.data.length;i+=4){
+          const r=data.data[i],g=data.data[i+1],b=data.data[i+2],a=data.data[i+3];
+          if(a>0&&r>228&&g>228&&b>228)data.data[i+3]=0;
+          else if(a>0&&r>210&&g>210&&b>210)data.data[i+3]=Math.round(a*.10);
+        }
+        ctx.putImageData(data,0,0);
+        c.toBlob(blob=>{URL.revokeObjectURL(url);if(!blob)return resolve(file);resolve(new File([blob],file.name.replace(/\.[^.]+$/,'')+'.png',{type:'image/png'}))},'image/png');
+      }catch(e){URL.revokeObjectURL(url);resolve(file)}
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);resolve(file)}; img.src=url;
+  });
+}
+if(typeof uploadFile==='function'&&!window.__refProUpload){
+  window.__refProUpload=true;
+  const oldUpload=uploadFile;
+  uploadFile=async function(file,folder){
+    const clean=(folder==='sponsors'||folder==='logos'||folder==='presidents')?await cleanLogoWhiteBackground(file):file;
+    return oldUpload(clean,folder);
+  }
+}
